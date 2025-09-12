@@ -11,19 +11,19 @@ const register = async (req, res) => {
   if (!username || !email || !password)
     return res.status(400).json({ error: "Faltan datos" });
 
-  if (User.findByEmail(email))
+  const existingUser = await User.findOne({ email });
+  if (existingUser)
     return res.status(400).json({ error: "Usuario ya registrado" });
 
   const hashed = await argon2.hash(password);
-  const user = new User(username, email, hashed);
-  User.save(user);
-
+  const newUser = new User({ username, email, password: hashed });
+  await newUser.save();
   res.json({ message: "Usuario registrado con éxito" });
 };
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = User.findByEmail(email);
+  const user = await User.findOne({ email });
   if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
 
   const valid = await argon2.verify(user.password, password);
