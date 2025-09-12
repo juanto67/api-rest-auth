@@ -1,9 +1,18 @@
 const express = require("express");
+const mongoose = require("mongoose"); // <-- Agrega esto
 const app = express();
 const authRoutes = require("./routes/auth.routes");
 const postRoutes = require("./routes/post.routes");
 
 app.use(express.json());
+
+// Conexión a MongoDB
+mongoose.connect("mongodb://localhost:27017/api-rest-auth", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("Conectado a MongoDB"))
+.catch(err => console.error("Error de conexión a MongoDB:", err));
 
 app.use("/auth", authRoutes);
 app.use("/posts", postRoutes);
