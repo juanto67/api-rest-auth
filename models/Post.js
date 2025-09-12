@@ -1,23 +1,9 @@
 const posts = []; // "Base de datos" temporal
-
-class Post {
-  constructor(title, content, author) {
-    this.title = title;
-    this.content = content;
-    this.author = author; // email del usuario
-  }
-
-  static save(post) {
-    posts.push(post);
-  }
-
-  static getAll() {
-    return posts;
-  }
-
-  static getByAuthor(author) {
-    return posts.filter(p => p.author === author);
-  }
-}
-
-module.exports = Post;
+const mongoose = require("mongoose");
+const postSchema = new mongoose.Schema({
+  title: {type: String, required: true},
+  content: {type: String, required: true},
+  author: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+  fecha: {type: Date, default: Date.now}
+});
+module.exports = mongoose.model("Post", postSchema);
