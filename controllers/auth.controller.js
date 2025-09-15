@@ -54,4 +54,4 @@ const logout = async (req, res) => {
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };
 
-module.exports = { register, login };
+module.exports = { register, login,logout };
