@@ -2,7 +2,7 @@ const User = require("../models/User");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const fs = require("fs");
-
+const Session = require("../models/Session");
 const privateKey = fs.readFileSync("private.key");
 const publicKey = fs.readFileSync("public.key");
 
@@ -28,12 +28,28 @@ const login = async (req, res) => {
 
   const valid = await argon2.verify(user.password, password);
   if (!valid) return res.status(401).json({ error: "Credenciales inválidas" });
-
+  const existenteSession = await Session.findOne({ userId: user._id });
+  if (existenteSession) return res.status(401).json({ error: "Ya existe una sesión activa para este usuario" });
   const token = jwt.sign(
   { _id: user._id, email: user.email },
   privateKey,
   { algorithm: "RS256", expiresIn: "1h" }
-);
+  );
+   await Session.create({ userId: user._id, token });
+
+  res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
+};
+const logout = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ email });
+  if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
+
+  const valid = await argon2.verify(user.password, password);
+  if (!valid) return res.status(401).json({ error: "Credenciales inválidas" });
+  const existenteSession = await Session.findOne({ userId: user._id });
+  if (!existenteSession) return res.status(401).json({ error: "No hay session iniciada de este usuario" });
+  await Session.deleteOne({ userId: user._id });
+  
 
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };

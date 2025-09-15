@@ -1,4 +1,4 @@
-const users = []; // "Base de datos" temporal
+
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
