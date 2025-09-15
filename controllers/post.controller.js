@@ -7,7 +7,7 @@ const createPost = async (req, res) => {
 
     if (!title || !content) return res.status(400).json({ error: "Faltan datos" });
 
-    const newPost = new Post({ title, content, author });
+    const newPost = new Post({ title, content, author, fecha: Date.now() });
     await newPost.save();
 
     res.json({ message: "Post creado con éxito", post: newPost });
@@ -28,7 +28,7 @@ const getPosts = async (req, res) => {
 
 const getMyPosts = async (req, res) => {
   try {
-    const posts = await Post.find({ author: req.user.email });
+    const posts = await Post.find({ author: req.user._id });
     res.json(posts);
   } catch (err) {
     res.status(500).json({ error: "Error al obtener tus posts" });
