@@ -3,7 +3,7 @@ const Post = require("../models/Post");
 const createPost = async (req, res) => {
   try {
     const { title, content } = req.body;
-    const author = req.user.email;
+    const author = req.user._id;
 
     if (!title || !content) return res.status(400).json({ error: "Faltan datos" });
 
@@ -12,6 +12,7 @@ const createPost = async (req, res) => {
 
     res.json({ message: "Post creado con éxito", post: newPost });
   } catch (err) {
+    console.error("Error al crear el post:", err); // <-- Agrega este log
     res.status(500).json({ error: "Error al crear el post" });
   }
 };

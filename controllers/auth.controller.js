@@ -29,10 +29,11 @@ const login = async (req, res) => {
   const valid = await argon2.verify(user.password, password);
   if (!valid) return res.status(401).json({ error: "Credenciales inválidas" });
 
-  const token = jwt.sign({ email: user.email }, privateKey, {
-    algorithm: "RS256",
-    expiresIn: "1h",
-  });
+  const token = jwt.sign(
+  { _id: user._id, email: user.email },
+  privateKey,
+  { algorithm: "RS256", expiresIn: "1h" }
+);
 
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };
