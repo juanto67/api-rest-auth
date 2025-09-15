@@ -1,10 +1,13 @@
 const express = require("express");
-const mongoose = require("mongoose"); // <-- Agrega esto
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser"); // <-- Añade esto
 const app = express();
 const authRoutes = require("./routes/auth.routes");
 const postRoutes = require("./routes/post.routes");
 
 app.use(express.json());
+app.use(cookieParser()); // <-- Añade esto
+
 
 // Conexión a MongoDB
 mongoose.connect("mongodb://localhost:27017/api-rest-auth", {
