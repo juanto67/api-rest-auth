@@ -12,7 +12,7 @@ const createPost = async (req, res) => {
 
     res.json({ message: "Post creado con éxito", post: newPost });
   } catch (err) {
-    console.error("Error al crear el post:", err); // <-- Agrega este log
+    
     res.status(500).json({ error: "Error al crear el post" });
   }
 };
