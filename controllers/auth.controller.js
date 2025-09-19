@@ -36,6 +36,8 @@ const login = async (req, res) => {
   { algorithm: "RS256", expiresIn: "1h" }
   );
    await Session.create({ userId: user._id, token });
+  // CREA LA COOKIE CON EL TOKEN (1 hora de duración)
+  res.cookie("token", token, { httpOnly: true, maxAge: 3600000 });
 
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };
@@ -54,4 +56,16 @@ const logout = async (req, res) => {
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };
 
-module.exports = { register, login,logout };
+const autoLogin = async (req, res) => {
+  try {
+    const { email } = req.user; // El email viene del token
+    const user = await User.findOne({ email });
+    if (!user) return res.status(401).json({ error: "Usuario no encontrado" });
+
+    res.json({ message: "Sesión iniciada con cookie", user: { username: user.username, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ error: "Error al iniciar sesión con cookie" });
+  }
+};
+
+module.exports = { register, login,logout, autoLogin };
