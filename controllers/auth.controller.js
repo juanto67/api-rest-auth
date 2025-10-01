@@ -42,18 +42,14 @@ const login = async (req, res) => {
   res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
 };
 const logout = async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
-  if (!user) return res.status(401).json({ error: "Credenciales inválidas" });
-
-  const valid = await argon2.verify(user.password, password);
-  if (!valid) return res.status(401).json({ error: "Credenciales inválidas" });
-  const existenteSession = await Session.findOne({ userId: user._id });
-  if (!existenteSession) return res.status(401).json({ error: "No hay session iniciada de este usuario" });
-  await Session.deleteOne({ userId: user._id });
-  
-
-  res.json({ message: "Login correcto", token, user: { username: user.username, email: user.email } });
+  try {
+    // El usuario autenticado está en req.user
+    await Session.deleteOne({ userId: req.user._id });
+    res.clearCookie("token");
+    res.json({ message: "Sesión cerrada correctamente" });
+  } catch (err) {
+    res.status(500).json({ error: "Error al cerrar sesión" });
+  }
 };
 
 const autoLogin = async (req, res) => {
