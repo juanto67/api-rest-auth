@@ -1,9 +1,9 @@
 const request = require("supertest");
 const app = require("./index"); // Asegúrate de exportar tu app en index.js
 const mongoose = require("mongoose");
-const User = require("../models/User");
-const Post = require("../models/Post");
-const Session = require("../models/Session");
+const User = require("./models/User");
+const Post = require("./models/Post");
+const Session = require("./models/Session");
 
 let token;
 let cookie;
