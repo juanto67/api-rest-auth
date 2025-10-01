@@ -1,15 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cookieParser = require("cookie-parser"); // <-- Añade esto
+const cookieParser = require("cookie-parser");
 const app = express();
 const authRoutes = require("./routes/auth.routes");
 const postRoutes = require("./routes/post.routes");
 
 app.use(express.json());
-app.use(cookieParser()); // <-- Añade esto
+app.use(cookieParser());
 
-
-// Conexión a MongoDB
 mongoose.connect("mongodb://localhost:27017/api-rest-auth", {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -22,4 +20,9 @@ app.use("/posts", postRoutes);
 
 app.get("/", (req, res) => res.send("Servidor funcionando 🚀"));
 
-app.listen(4000, () => console.log("Servidor en http://localhost:4000"));
+// Solo inicia el servidor si este archivo es el principal
+if (require.main === module) {
+  app.listen(4000, () => console.log("Servidor en http://localhost:4000"));
+}
+
+module.exports = app;
