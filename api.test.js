@@ -1,5 +1,5 @@
 const request = require("supertest");
-const app = require("../index"); // Asegúrate de exportar tu app en index.js
+const app = require("./index"); // Asegúrate de exportar tu app en index.js
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const Post = require("../models/Post");
